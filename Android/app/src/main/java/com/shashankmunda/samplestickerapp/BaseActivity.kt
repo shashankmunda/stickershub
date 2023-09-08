@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment
 
 abstract class BaseActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 

@@ -10,8 +10,10 @@ package com.shashankmunda.samplestickerapp
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.ComponentInfoFlags
 import android.content.pm.PackageManager.NameNotFoundException
 import android.net.Uri.Builder
+import android.os.Build
 
 object WhitelistCheck {
     private const val AUTHORITY_QUERY_PARAM = "authority"
@@ -46,7 +48,11 @@ object WhitelistCheck {
         val packageManager = context.packageManager
         if (isPackageInstalled(whatsappPackageName, packageManager)) {
             val whatsappProviderAuthority = whatsappPackageName + CONTENT_PROVIDER
-            val providerInfo = packageManager.resolveContentProvider(
+            val providerInfo = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) packageManager.resolveContentProvider(
+                whatsappProviderAuthority,
+                PackageManager.ComponentInfoFlags.of(0)
+            )
+            else packageManager.resolveContentProvider(
                 whatsappProviderAuthority,
                 PackageManager.GET_META_DATA
             )
@@ -78,7 +84,9 @@ object WhitelistCheck {
 
     @JvmStatic fun isPackageInstalled(packageName: String?, packageManager: PackageManager): Boolean {
         return try {
-            val applicationInfo = packageManager.getApplicationInfo(packageName!!, 0)
+            val applicationInfo = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+                packageManager.getApplicationInfo(packageName!!,PackageManager.ApplicationInfoFlags.of(0))
+                else packageManager.getApplicationInfo(packageName!!, 0)
             applicationInfo?.enabled ?: false
         } catch (e: NameNotFoundException) {
             false

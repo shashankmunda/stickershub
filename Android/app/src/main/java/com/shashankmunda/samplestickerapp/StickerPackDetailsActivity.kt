@@ -8,7 +8,6 @@
 package com.shashankmunda.samplestickerapp
 
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.Menu
@@ -25,11 +24,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.facebook.drawee.view.SimpleDraweeView
 import com.shashankmunda.samplestickerapp.StickerPackLoader.getStickerAssetUri
+import com.shashankmunda.samplestickerapp.Utils.getParcelableExtraCompat
 import com.shashankmunda.samplestickerapp.WhitelistCheck.isWhitelisted
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ref.WeakReference
 
 class StickerPackDetailsActivity : AddStickerPackActivity() {
     private lateinit var recyclerView: RecyclerView
@@ -44,7 +43,7 @@ class StickerPackDetailsActivity : AddStickerPackActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sticker_pack_details)
         val showUpButton = intent.getBooleanExtra(EXTRA_SHOW_UP_BUTTON, false)
-        stickerPack = intent.getParcelableExtra(EXTRA_STICKER_PACK_DATA)!!
+        stickerPack = intent.getParcelableExtraCompat(EXTRA_STICKER_PACK_DATA,StickerPack::class.java)!!
         val packNameTextView = findViewById<TextView>(R.id.pack_name)
         val packPublisherTextView = findViewById<TextView>(R.id.author)
         val packTrayIcon = findViewById<ImageView>(R.id.tray_image)
@@ -79,18 +78,16 @@ class StickerPackDetailsActivity : AddStickerPackActivity() {
             )
         )
         packSizeTextView.text = Formatter.formatShortFileSize(this, stickerPack!!.totalSize)
-        addButton.setOnClickListener(View.OnClickListener { v: View? ->
+        addButton.setOnClickListener { v: View? ->
             addStickerPackToWhatsApp(
                 stickerPack!!.identifier, stickerPack!!.name
             )
-        })
+        }
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(showUpButton)
-            supportActionBar!!.setTitle(
-                if (showUpButton) resources.getString(R.string.title_activity_sticker_pack_details_multiple_pack) else resources.getQuantityString(
-                    R.plurals.title_activity_sticker_packs_list,
-                    1
-                )
+            supportActionBar!!.title = if (showUpButton) resources.getString(R.string.title_activity_sticker_pack_details_multiple_pack) else resources.getQuantityString(
+                R.plurals.title_activity_sticker_packs_list,
+                1
             )
         }
         findViewById<View>(R.id.sticker_pack_animation_indicator).visibility =
@@ -145,7 +142,7 @@ class StickerPackDetailsActivity : AddStickerPackActivity() {
 
     private val pageLayoutListener = OnGlobalLayoutListener {
         setNumColumns(
-            recyclerView!!.width / recyclerView!!.context.resources.getDimensionPixelSize(
+            recyclerView.width / recyclerView!!.context.resources.getDimensionPixelSize(
                 R.dimen.sticker_pack_details_image_size
             )
         )
@@ -153,7 +150,7 @@ class StickerPackDetailsActivity : AddStickerPackActivity() {
 
     private fun setNumColumns(numColumns: Int) {
         if (this.numColumns != numColumns) {
-            layoutManager!!.spanCount = numColumns
+            layoutManager.spanCount = numColumns
             this.numColumns = numColumns
             if (stickerPreviewAdapter != null) {
                 stickerPreviewAdapter!!.notifyDataSetChanged()

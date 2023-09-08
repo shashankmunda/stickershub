@@ -60,7 +60,7 @@ class EntryActivity : BaseActivity() {
     }
 
     private fun showStickerPack(stickerPackList: ArrayList<StickerPack>?) {
-        progressBar!!.visibility = View.GONE
+        progressBar.visibility = View.GONE
         if (stickerPackList!!.size > 1) {
             val intent = Intent(this, StickerPackListActivity::class.java)
             intent.putParcelableArrayListExtra(

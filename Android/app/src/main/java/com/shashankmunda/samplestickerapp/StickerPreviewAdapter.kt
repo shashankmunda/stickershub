@@ -43,18 +43,18 @@ class StickerPreviewAdapter internal constructor(
     }
 
     override fun onBindViewHolder(stickerPreviewViewHolder: StickerPreviewViewHolder, i: Int) {
-        stickerPreviewViewHolder.stickerPreviewView.setImageResource(errorResource)
+        stickerPreviewViewHolder.stickerPreviewView.setActualImageResource(errorResource)
         stickerPreviewViewHolder.stickerPreviewView.setImageURI(
             StickerPackLoader.getStickerAssetUri(
                 stickerPack.identifier, stickerPack.stickers[i].imageFileName
-            )
+            ), null
         )
-        stickerPreviewViewHolder.stickerPreviewView.setOnClickListener({ v: View? ->
+        stickerPreviewViewHolder.stickerPreviewView.setOnClickListener { v: View? ->
             expandPreview(
                 i,
                 stickerPreviewViewHolder.stickerPreviewView
             )
-        })
+        }
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -140,7 +140,7 @@ class StickerPreviewAdapter internal constructor(
                 .setUri(stickerAssetUri)
                 .setAutoPlayAnimations(true)
                 .build()
-            expandedStickerPreview.setImageResource(errorResource)
+            expandedStickerPreview.setActualImageResource(errorResource)
             expandedStickerPreview.controller = controller
             expandedStickerPreview.visibility = View.VISIBLE
             recyclerView!!.alpha = EXPANDED_STICKER_PREVIEW_BACKGROUND_ALPHA
@@ -157,18 +157,17 @@ class StickerPreviewAdapter internal constructor(
     }
 
     private val isStickerPreviewExpanded: Boolean
-        private get() = expandedStickerPreview != null && expandedStickerPreview.visibility == View.VISIBLE
+        get() = expandedStickerPreview != null && expandedStickerPreview.visibility == View.VISIBLE
 
     override fun getItemCount(): Int {
-        val numberOfPreviewImagesInPack: Int
-        numberOfPreviewImagesInPack = stickerPack.stickers.size
+        val numberOfPreviewImagesInPack: Int = stickerPack.stickers.size
         return if (cellLimit > 0) {
             Math.min(numberOfPreviewImagesInPack, cellLimit)
         } else numberOfPreviewImagesInPack
     }
 
     companion object {
-        private val COLLAPSED_STICKER_PREVIEW_BACKGROUND_ALPHA = 1f
-        private val EXPANDED_STICKER_PREVIEW_BACKGROUND_ALPHA = 0.2f
+        private const val COLLAPSED_STICKER_PREVIEW_BACKGROUND_ALPHA = 1f
+        private const val EXPANDED_STICKER_PREVIEW_BACKGROUND_ALPHA = 0.2f
     }
 }

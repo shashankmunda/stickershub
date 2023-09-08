@@ -94,7 +94,7 @@ object ContentFileParser {
         check(!TextUtils.isEmpty(publisher)) { "publisher cannot be empty" }
         check(!TextUtils.isEmpty(trayImageFile)) { "tray_image_file cannot be empty" }
         check(!(stickerList == null || stickerList.size == 0)) { "sticker list is empty" }
-        check(!(identifier!!.contains("..") || identifier.contains("/"))) { "identifier should not contain .. or / to prevent directory traversal" }
+        check(!(identifier.contains("..") || identifier.contains("/"))) { "identifier should not contain .. or / to prevent directory traversal" }
         check(!TextUtils.isEmpty(imageDataVersion)) { "image_data_version should not be empty" }
         reader.endObject()
         val stickerPack = StickerPack(

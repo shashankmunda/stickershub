@@ -49,7 +49,7 @@ class StickerPackListAdapter internal constructor(
         }
         viewHolder.imageRowView.removeAllViews()
         //if this sticker pack contains less stickers than the max, then take the smaller size.
-        val actualNumberOfStickersToShow = Math.min(maxNumberOfStickersInARow, pack.stickers!!.size)
+        val actualNumberOfStickersToShow = Math.min(maxNumberOfStickersInARow, pack.stickers.size)
         for (i in 0 until actualNumberOfStickersToShow) {
             val rowImage = LayoutInflater.from(context).inflate(
                 R.layout.sticker_packs_list_image_item,
@@ -59,8 +59,8 @@ class StickerPackListAdapter internal constructor(
             rowImage.setImageURI(
                 getStickerAssetUri(
                     pack.identifier,
-                    pack.stickers!![i].imageFileName
-                )
+                    pack.stickers[i].imageFileName
+                ), null
             )
             val lp = rowImage.layoutParams as LayoutParams
             val marginBetweenImages = minMarginBetweenImages - lp.leftMargin - lp.rightMargin

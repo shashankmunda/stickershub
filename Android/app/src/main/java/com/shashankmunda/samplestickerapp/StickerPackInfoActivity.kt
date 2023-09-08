@@ -12,7 +12,6 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build.VERSION
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -20,7 +19,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
-import androidx.core.view.ViewCompat
+import androidx.appcompat.content.res.AppCompatResources
 import java.io.FileNotFoundException
 
 class StickerPackInfoActivity : BaseActivity() {
@@ -42,15 +41,7 @@ class StickerPackInfoActivity : BaseActivity() {
             val emailDrawable = getDrawableForAllAPIs(R.drawable.sticker_3rdparty_email)
             trayDrawable.bounds =
                 Rect(0, 0, emailDrawable!!.intrinsicWidth, emailDrawable.intrinsicHeight)
-            if (VERSION.SDK_INT > 17) {
-                trayIcon.setCompoundDrawablesRelative(trayDrawable, null, null, null)
-            } else {
-                if (ViewCompat.getLayoutDirection(trayIcon) == ViewCompat.LAYOUT_DIRECTION_LTR) {
-                    trayIcon.setCompoundDrawables(null, null, trayDrawable, null)
-                } else {
-                    trayIcon.setCompoundDrawables(trayDrawable, null, null, null)
-                }
-            }
+            trayIcon.setCompoundDrawablesRelative(trayDrawable, null, null, null)
         } catch (e: FileNotFoundException) {
             Log.e(TAG, "could not find the uri for the tray image:$trayIconUriString")
         }
@@ -96,7 +87,7 @@ class StickerPackInfoActivity : BaseActivity() {
     }
 
     private fun getDrawableForAllAPIs(@DrawableRes id: Int): Drawable? {
-        return getDrawable(id)
+        return AppCompatResources.getDrawable(applicationContext,id)
     }
 
     companion object {

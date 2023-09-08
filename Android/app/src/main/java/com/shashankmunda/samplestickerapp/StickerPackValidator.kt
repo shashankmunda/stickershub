@@ -46,12 +46,12 @@ object StickerPackValidator {
         stickerPack: StickerPack
     ) {
         check(!TextUtils.isEmpty(stickerPack.identifier)) { "sticker pack identifier is empty" }
-        check(stickerPack.identifier!!.length <= CHAR_COUNT_MAX) { "sticker pack identifier cannot exceed $CHAR_COUNT_MAX characters" }
-        checkStringValidity(stickerPack.identifier!!)
+        check(stickerPack.identifier.length <= CHAR_COUNT_MAX) { "sticker pack identifier cannot exceed $CHAR_COUNT_MAX characters" }
+        checkStringValidity(stickerPack.identifier)
         check(!TextUtils.isEmpty(stickerPack.publisher)) { "sticker pack publisher is empty, sticker pack identifier: " + stickerPack.identifier }
-        check(stickerPack.publisher!!.length <= CHAR_COUNT_MAX) { "sticker pack publisher cannot exceed " + CHAR_COUNT_MAX + " characters, sticker pack identifier: " + stickerPack.identifier }
+        check(stickerPack.publisher.length <= CHAR_COUNT_MAX) { "sticker pack publisher cannot exceed " + CHAR_COUNT_MAX + " characters, sticker pack identifier: " + stickerPack.identifier }
         check(!TextUtils.isEmpty(stickerPack.name)) { "sticker pack name is empty, sticker pack identifier: " + stickerPack.identifier }
-        check(stickerPack.name!!.length <= CHAR_COUNT_MAX) { "sticker pack name cannot exceed " + CHAR_COUNT_MAX + " characters, sticker pack identifier: " + stickerPack.identifier }
+        check(stickerPack.name.length <= CHAR_COUNT_MAX) { "sticker pack name cannot exceed " + CHAR_COUNT_MAX + " characters, sticker pack identifier: " + stickerPack.identifier }
         check(!TextUtils.isEmpty(stickerPack.trayImageFile)) { "sticker pack tray id is empty, sticker pack identifier:" + stickerPack.identifier }
         check(
             !(!TextUtils.isEmpty(stickerPack.androidPlayStoreLink) && !isValidWebsiteUrl(
@@ -121,7 +121,7 @@ object StickerPackValidator {
         check(sticker.emojis!!.size <= EMOJI_MAX_LIMIT) { "emoji count exceed limit, sticker pack identifier: " + identifier + ", filename: " + sticker.imageFileName }
         check(sticker.emojis.size >= EMOJI_MIN_LIMIT) { "To provide best user experience, please associate at least 1 emoji to this sticker, sticker pack identifier: " + identifier + ", filename: " + sticker.imageFileName }
         check(!TextUtils.isEmpty(sticker.imageFileName)) { "no file path for sticker, sticker pack identifier:$identifier" }
-        validateStickerFile(context, identifier, sticker.imageFileName!!, animatedStickerPack)
+        validateStickerFile(context, identifier, sticker.imageFileName, animatedStickerPack)
     }
 
     @Throws(IllegalStateException::class) private fun validateStickerFile(

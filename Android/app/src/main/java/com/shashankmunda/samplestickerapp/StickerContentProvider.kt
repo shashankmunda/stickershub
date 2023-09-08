@@ -43,7 +43,7 @@ class StickerContentProvider : ContentProvider() {
                 STICKERS_ASSET + "/" + stickerPack.identifier + "/" + stickerPack.trayImageFile,
                 STICKER_PACK_TRAY_ICON_CODE
             )
-            for (sticker in stickerPack.stickers!!) {
+            for (sticker in stickerPack.stickers) {
                 MATCHER.addURI(
                     authority,
                     STICKERS_ASSET + "/" + stickerPack.identifier + "/" + sticker.imageFileName,
@@ -57,16 +57,20 @@ class StickerContentProvider : ContentProvider() {
     override fun query(
         uri: Uri, projection: Array<String>?, selection: String?,
         selectionArgs: Array<String>?, sortOrder: String?
-    ): Cursor? {
-        val code = MATCHER.match(uri)
-        return if (code == METADATA_CODE) {
-            getPackForAllStickerPacks(uri)
-        } else if (code == METADATA_CODE_FOR_SINGLE_PACK) {
-            getCursorForSingleStickerPack(uri)
-        } else if (code == STICKERS_CODE) {
-            getStickersForAStickerPack(uri)
-        } else {
-            throw IllegalArgumentException("Unknown URI: $uri")
+    ): Cursor {
+        return when (MATCHER.match(uri)) {
+            METADATA_CODE -> {
+                getPackForAllStickerPacks(uri)
+            }
+            METADATA_CODE_FOR_SINGLE_PACK -> {
+                getCursorForSingleStickerPack(uri)
+            }
+            STICKERS_CODE -> {
+                getStickersForAStickerPack(uri)
+            }
+            else -> {
+                throw IllegalArgumentException("Unknown URI: $uri")
+            }
         }
     }
 
@@ -77,9 +81,8 @@ class StickerContentProvider : ContentProvider() {
         } else null
     }
 
-    override fun getType(uri: Uri): String? {
-        val matchCode = MATCHER.match(uri)
-        return when (matchCode) {
+    override fun getType(uri: Uri): String {
+        return when (MATCHER.match(uri)) {
             METADATA_CODE -> "vnd.android.cursor.dir/vnd." + BuildConfig.CONTENT_PROVIDER_AUTHORITY + "." + METADATA
             METADATA_CODE_FOR_SINGLE_PACK -> "vnd.android.cursor.item/vnd." + BuildConfig.CONTENT_PROVIDER_AUTHORITY + "." + METADATA
             STICKERS_CODE -> "vnd.android.cursor.dir/vnd." + BuildConfig.CONTENT_PROVIDER_AUTHORITY + "." + STICKERS
@@ -165,7 +168,7 @@ class StickerContentProvider : ContentProvider() {
         val cursor = MatrixCursor(arrayOf(STICKER_FILE_NAME_IN_QUERY, STICKER_FILE_EMOJI_IN_QUERY))
         for (stickerPack in getStickerPackList()!!) {
             if (identifier == stickerPack.identifier) {
-                for (sticker in stickerPack.stickers!!) {
+                for (sticker in stickerPack.stickers) {
                     cursor.addRow(
                         arrayOf(
                             sticker.imageFileName,
@@ -181,7 +184,7 @@ class StickerContentProvider : ContentProvider() {
 
     @Throws(IllegalArgumentException::class)
     private fun getImageAsset(uri: Uri): AssetFileDescriptor? {
-        val am = Objects.requireNonNull(context)?.assets
+        val am = Objects.requireNonNull(context)!!.assets
         val pathSegments = uri.pathSegments
         require(pathSegments.size == 3) { "path segments should be 3, uri is: $uri" }
         val fileName = pathSegments[pathSegments.size - 1]
@@ -194,7 +197,7 @@ class StickerContentProvider : ContentProvider() {
                 if (fileName == stickerPack.trayImageFile) {
                     return fetchFile(uri, requireNotNull(am), fileName, identifier)
                 } else {
-                    for (sticker in stickerPack.stickers!!) {
+                    for (sticker in stickerPack.stickers) {
                         if (fileName == sticker.imageFileName) {
                             return fetchFile(uri, requireNotNull(am), fileName, identifier)
                         }

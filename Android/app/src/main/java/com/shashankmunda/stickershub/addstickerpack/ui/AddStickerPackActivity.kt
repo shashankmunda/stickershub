@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub.addstickerpack.ui
 
 import android.app.Dialog
 import android.content.ActivityNotFoundException
@@ -18,13 +18,20 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.fragment.app.DialogFragment
-import com.shashankmunda.samplestickerapp.BaseActivity.MessageDialogFragment.Companion.newInstance
-import com.shashankmunda.samplestickerapp.WhitelistCheck.isPackageInstalled
-import com.shashankmunda.samplestickerapp.WhitelistCheck.isStickerPackWhitelistedInWhatsAppConsumer
-import com.shashankmunda.samplestickerapp.WhitelistCheck.isStickerPackWhitelistedInWhatsAppSmb
-import com.shashankmunda.samplestickerapp.WhitelistCheck.isWhatsAppConsumerAppInstalled
-import com.shashankmunda.samplestickerapp.WhitelistCheck.isWhatsAppSmbAppInstalled
+import com.shashankmunda.stickershub.BaseActivity
+import com.shashankmunda.stickershub.BaseActivity.MessageDialogFragment.Companion.newInstance
+import com.shashankmunda.stickershub.BuildConfig
+import com.shashankmunda.stickershub.R
+import com.shashankmunda.stickershub.WhitelistCheck
+import com.shashankmunda.stickershub.WhitelistCheck.isPackageInstalled
+import com.shashankmunda.stickershub.WhitelistCheck.isStickerPackWhitelistedInWhatsAppConsumer
+import com.shashankmunda.stickershub.WhitelistCheck.isStickerPackWhitelistedInWhatsAppSmb
+import com.shashankmunda.stickershub.WhitelistCheck.isWhatsAppConsumerAppInstalled
+import com.shashankmunda.stickershub.WhitelistCheck.isWhatsAppSmbAppInstalled
+import com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 abstract class AddStickerPackActivity : BaseActivity() {
 
     private val activityLauncher =registerForActivityResult(StartActivityForResult()){
@@ -107,6 +114,7 @@ abstract class AddStickerPackActivity : BaseActivity() {
     //Handle cases either of WhatsApp are set as default app to handle this intent. We still want users to see both options.
     private fun launchIntentToAddPackToChooser(identifier: String, stickerPackName: String) {
         val intent = createIntentToAddStickerPack(identifier, stickerPackName)
+
         try {
             activityLauncher.launch(
                 Intent.createChooser(intent, getString(R.string.add_to_whatsapp))

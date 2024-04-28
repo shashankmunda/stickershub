@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.shashankmunda.samplestickerapp">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:name=".StickerApplication"
+        android:name="com.shashankmunda.stickershub.StickerApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
@@ -13,34 +12,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".EntryActivity"
+        <activity android:name="com.shashankmunda.stickershub.EntryActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".StickerPackListActivity" />
+        <activity android:name="com.shashankmunda.stickershub.stickerpacklist.ui.StickerPackListActivity" />
         <activity
-            android:name=".StickerPackDetailsActivity"
-            android:parentActivityName=".StickerPackListActivity"
+            android:name="com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity"
+            android:parentActivityName="com.shashankmunda.stickershub.stickerpacklist.ui.StickerPackListActivity"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.shashankmunda.samplestickerapp.StickerPackListActivity" />
+                android:value="com.shashankmunda.stickershub.stickerpacklist.ui.StickerPackListActivity" />
         </activity>
         <activity
-            android:name=".StickerPackInfoActivity"
+            android:name="com.shashankmunda.stickershub.stickerpackinfo.StickerPackInfoActivity"
             android:label="@string/title_activity_sticker_pack_info"
-            android:parentActivityName=".StickerPackDetailsActivity"
+            android:parentActivityName="com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity"
             tools:ignore="UnusedAttribute">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.shashankmunda.samplestickerapp.StickerPackDetailsActivity" />
+                android:value="com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity" />
         </activity>
 
         <provider
-            android:name=".StickerContentProvider"
+            android:name="com.shashankmunda.stickershub.StickerContentProvider"
             android:authorities="${contentProviderAuthority}"
             android:enabled="true"
             android:exported="true"

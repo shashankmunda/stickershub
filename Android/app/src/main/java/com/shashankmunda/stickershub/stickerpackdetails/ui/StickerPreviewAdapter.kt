@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub.stickerpackdetails.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
+import com.shashankmunda.stickershub.R
+import com.shashankmunda.stickershub.StickerPack
+import com.shashankmunda.stickershub.StickerPackLoader
 
 class StickerPreviewAdapter internal constructor(
     private val layoutInflater: LayoutInflater,
@@ -29,8 +32,8 @@ class StickerPreviewAdapter internal constructor(
     private val cellLimit = 0
     private var recyclerView: RecyclerView? = null
     private var clickedStickerPreview: View? = null
-    var expandedViewLeftX = 0f
-    var expandedViewTopY = 0f
+    private var expandedViewLeftX = 0f
+    private var expandedViewTopY = 0f
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): StickerPreviewViewHolder {
         val itemView = layoutInflater.inflate(R.layout.sticker_image_item, viewGroup, false)
         val vh = StickerPreviewViewHolder(itemView)

@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub
 
 import android.content.ContentProvider
 import android.content.ContentResolver
@@ -33,10 +33,10 @@ class StickerContentProvider : ContentProvider() {
         MATCHER.addURI(authority, METADATA, METADATA_CODE)
 
         //the call to get the metadata for single sticker pack. * represent the identifier
-        MATCHER.addURI(authority, METADATA + "/*", METADATA_CODE_FOR_SINGLE_PACK)
+        MATCHER.addURI(authority, "$METADATA/*", METADATA_CODE_FOR_SINGLE_PACK)
 
         //gets the list of stickers for a sticker pack, * respresent the identifier.
-        MATCHER.addURI(authority, STICKERS + "/*", STICKERS_CODE)
+        MATCHER.addURI(authority, "$STICKERS/*", STICKERS_CODE)
         for (stickerPack in getStickerPackList()!!) {
             MATCHER.addURI(
                 authority,
@@ -262,7 +262,7 @@ class StickerContentProvider : ContentProvider() {
         const val STICKER_FILE_NAME_IN_QUERY = "sticker_file_name"
         const val STICKER_FILE_EMOJI_IN_QUERY = "sticker_emoji"
         private const val CONTENT_FILE_NAME = "contents.json"
-        val AUTHORITY_URI = Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(
+        val AUTHORITY_URI: Uri = Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(
             BuildConfig.CONTENT_PROVIDER_AUTHORITY
         ).appendPath(METADATA).build()
 

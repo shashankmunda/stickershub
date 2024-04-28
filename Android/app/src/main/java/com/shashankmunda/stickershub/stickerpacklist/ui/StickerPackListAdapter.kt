@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub.stickerpacklist.ui
 
 import android.R.attr
 import android.content.Intent
@@ -19,7 +19,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.facebook.drawee.view.SimpleDraweeView
-import com.shashankmunda.samplestickerapp.StickerPackLoader.getStickerAssetUri
+import com.shashankmunda.stickershub.R
+import com.shashankmunda.stickershub.StickerPack
+import com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity
+import com.shashankmunda.stickershub.StickerPackLoader.getStickerAssetUri
 
 class StickerPackListAdapter internal constructor(
     private var stickerPacks: List<StickerPack>,

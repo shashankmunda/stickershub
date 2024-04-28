@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub
 
 import android.content.ContentResolver
 import android.content.Context
@@ -13,10 +13,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.net.Uri.Builder
 import android.text.TextUtils
-import com.shashankmunda.samplestickerapp.StickerPackValidator.verifyStickerPackValidity
+import com.shashankmunda.stickershub.StickerPackValidator.verifyStickerPackValidity
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.Arrays
 
 internal object StickerPackLoader {
     /**
@@ -38,7 +37,7 @@ internal object StickerPackLoader {
             check(!identifierSet.contains(stickerPack.identifier)) { "sticker pack identifiers should be unique, there are more than one pack with identifier:" + stickerPack.identifier }
             identifierSet.add(stickerPack.identifier!!)
         }
-        check(!stickerPackList.isEmpty()) { "There should be at least one sticker pack in the app" }
+        check(stickerPackList.isNotEmpty()) { "There should be at least one sticker pack in the app" }
         for (stickerPack in stickerPackList) {
             val stickers = getStickersForPack(context, stickerPack)
             stickerPack.stickers = stickers
@@ -58,7 +57,7 @@ internal object StickerPackLoader {
                     sticker.imageFileName,
                     context.contentResolver
                 )
-                check(bytes.size > 0) { "Asset file is empty, pack: " + stickerPack.name + ", sticker: " + sticker.imageFileName }
+                check(bytes.isNotEmpty()) { "Asset file is empty, pack: " + stickerPack.name + ", sticker: " + sticker.imageFileName }
                 sticker.size = bytes.size.toLong()
             } catch (e: IOException) {
                 throw IllegalStateException(

@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub.stickerpacklist.ui
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
@@ -14,23 +14,33 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.shashankmunda.samplestickerapp.StickerPackListAdapter.OnAddButtonClickedListener
-import com.shashankmunda.samplestickerapp.Utils.getParcelableArrayListExtraCompat
-import com.shashankmunda.samplestickerapp.WhitelistCheck.isWhitelisted
+import com.shashankmunda.stickershub.R
+import com.shashankmunda.stickershub.addstickerpack.ui.AddStickerPackActivity
+import com.shashankmunda.stickershub.StickerPack
+import com.shashankmunda.stickershub.stickerpacklist.ui.StickerPackListAdapter.OnAddButtonClickedListener
+import com.shashankmunda.stickershub.Utils.getParcelableArrayListExtraCompat
+import com.shashankmunda.stickershub.WhitelistCheck.isWhitelisted
+import com.shashankmunda.stickershub.databinding.ActivityStickerPackListBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class StickerPackListActivity : AddStickerPackActivity() {
     private lateinit var packLayoutManager: LinearLayoutManager
     private lateinit var packRecyclerView: RecyclerView
     private lateinit var allStickerPacksListAdapter: StickerPackListAdapter
     private lateinit var stickerPackList: ArrayList<StickerPack>
+
+    private lateinit var binding: ActivityStickerPackListBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sticker_pack_list)
-        packRecyclerView = findViewById(R.id.sticker_pack_list)
-        stickerPackList = intent.getParcelableArrayListExtraCompat(EXTRA_STICKER_PACK_LIST_DATA,StickerPack::class.java)!!
+        binding = ActivityStickerPackListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        stickerPackList = intent.getParcelableArrayListExtraCompat(
+            EXTRA_STICKER_PACK_LIST_DATA,
+            StickerPack::class.java)!!
         showStickerPackList(stickerPackList)
         if (supportActionBar != null) {
             supportActionBar!!.title = resources.getQuantityString(
@@ -55,32 +65,19 @@ class StickerPackListActivity : AddStickerPackActivity() {
         }
     }
 
-    /*override fun onResume() {
-        super.onResume()
-        whiteListCheckAsyncTask = WhiteListCheckAsyncTask(this)
-        whiteListCheckAsyncTask!!.execute(*stickerPackList!!.toTypedArray())
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (whiteListCheckAsyncTask != null && !whiteListCheckAsyncTask!!.isCancelled) {
-            whiteListCheckAsyncTask!!.cancel(true)
-        }
-    }*/
-
     private fun showStickerPackList(stickerPackList: List<StickerPack>?) {
         allStickerPacksListAdapter =
             StickerPackListAdapter(stickerPackList!!, onAddButtonClickedListener)
-        packRecyclerView.adapter = allStickerPacksListAdapter
+        binding.stickerPackList.adapter = allStickerPacksListAdapter
         packLayoutManager = LinearLayoutManager(this)
         packLayoutManager.orientation = RecyclerView.VERTICAL
         val dividerItemDecoration = DividerItemDecoration(
-            packRecyclerView.context,
+            binding.stickerPackList.context,
             packLayoutManager.orientation
         )
-        packRecyclerView.addItemDecoration(dividerItemDecoration)
-        packRecyclerView.layoutManager = packLayoutManager
-        packRecyclerView.viewTreeObserver.addOnGlobalLayoutListener { recalculateColumnCount() }
+        binding.stickerPackList.addItemDecoration(dividerItemDecoration)
+        binding.stickerPackList.layoutManager = packLayoutManager
+        binding.stickerPackList.viewTreeObserver.addOnGlobalLayoutListener { recalculateColumnCount() }
     }
 
     private val onAddButtonClickedListener: OnAddButtonClickedListener =
@@ -98,7 +95,7 @@ class StickerPackListActivity : AddStickerPackActivity() {
             resources.getDimensionPixelSize(R.dimen.sticker_pack_list_item_preview_image_size)
         val firstVisibleItemPosition = packLayoutManager.findFirstVisibleItemPosition()
         val viewHolder =
-            packRecyclerView.findViewHolderForAdapterPosition(firstVisibleItemPosition) as StickerPackListItemViewHolder?
+            binding.stickerPackList.findViewHolderForAdapterPosition(firstVisibleItemPosition) as StickerPackListItemViewHolder?
         if (viewHolder != null) {
             val widthOfImageRow = viewHolder.imageRowView.measuredWidth
             val max = Math.max(widthOfImageRow / previewSize, 1)
@@ -112,34 +109,6 @@ class StickerPackListActivity : AddStickerPackActivity() {
         }
     }
 
-  /*  internal class WhiteListCheckAsyncTask(stickerPackListActivity: StickerPackListActivity) :
-        AsyncTask<StickerPack?, Void?, List<StickerPack>>() {
-        private val stickerPackListActivityWeakReference: WeakReference<StickerPackListActivity>
-
-        init {
-            stickerPackListActivityWeakReference = WeakReference(stickerPackListActivity)
-        }
-
-        protected override fun doInBackground(vararg stickerPackArray: StickerPack): List<StickerPack> {
-            val stickerPackListActivity = stickerPackListActivityWeakReference.get()
-                ?: return Arrays.asList(*stickerPackArray)
-            for (stickerPack in stickerPackArray) {
-                stickerPack.isWhitelisted =
-                    isWhitelisted(stickerPackListActivity, stickerPack.identifier)
-            }
-            return Arrays.asList(*stickerPackArray)
-        }
-
-        override fun onPostExecute(stickerPackList: List<StickerPack>) {
-            val stickerPackListActivity = stickerPackListActivityWeakReference.get()
-            if (stickerPackListActivity != null) {
-                stickerPackListActivity.allStickerPacksListAdapter!!.setStickerPackList(
-                    stickerPackList
-                )
-                stickerPackListActivity.allStickerPacksListAdapter!!.notifyDataSetChanged()
-            }
-        }
-    }*/
 
     companion object {
         const val EXTRA_STICKER_PACK_LIST_DATA = "sticker_pack_list"

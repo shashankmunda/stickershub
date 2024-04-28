@@ -5,12 +5,11 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub
 
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.ComponentInfoFlags
 import android.content.pm.PackageManager.NameNotFoundException
 import android.net.Uri.Builder
 import android.os.Build

@@ -1,4 +1,4 @@
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub
 
 import android.content.Intent
 import android.os.Build

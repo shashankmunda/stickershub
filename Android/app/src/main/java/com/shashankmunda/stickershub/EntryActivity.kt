@@ -5,32 +5,35 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
 import android.view.View
-import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
-import com.shashankmunda.samplestickerapp.StickerPackLoader.fetchStickerPacks
-import com.shashankmunda.samplestickerapp.StickerPackValidator.verifyStickerPackValidity
+import com.shashankmunda.stickershub.StickerPackLoader.fetchStickerPacks
+import com.shashankmunda.stickershub.StickerPackValidator.verifyStickerPackValidity
+import com.shashankmunda.stickershub.databinding.ActivityEntryBinding
+import com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity
+import com.shashankmunda.stickershub.stickerpacklist.ui.StickerPackListActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class EntryActivity : BaseActivity() {
-    private lateinit var progressBar: View
-
+    private lateinit var binding: ActivityEntryBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_entry)
+        binding = ActivityEntryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         overridePendingTransition(0, 0)
         if (supportActionBar != null) {
             supportActionBar!!.hide()
         }
-        progressBar = findViewById(R.id.entry_activity_progress)
         lifecycleScope.launch(Dispatchers.IO){
             val stickerPackList: ArrayList<StickerPack>
             val stringListPair = try {
@@ -55,12 +58,10 @@ class EntryActivity : BaseActivity() {
                 }
             }
         }
-       /* loadListAsyncTask = LoadListAsyncTask(this)
-        loadListAsyncTask!!.execute()*/
     }
 
     private fun showStickerPack(stickerPackList: ArrayList<StickerPack>?) {
-        progressBar.visibility = View.GONE
+        binding.entryActivityProgress.visibility = View.GONE
         if (stickerPackList!!.size > 1) {
             val intent = Intent(this, StickerPackListActivity::class.java)
             intent.putParcelableArrayListExtra(
@@ -81,58 +82,9 @@ class EntryActivity : BaseActivity() {
     }
 
     private fun showErrorMessage(errorMessage: String?) {
-        progressBar!!.visibility = View.GONE
+        binding.entryActivityProgress!!.visibility = View.GONE
         Log.e("EntryActivity", "error fetching sticker packs, $errorMessage")
-        val errorMessageTV = findViewById<TextView>(R.id.error_message)
+        val errorMessageTV = binding.errorMessage
         errorMessageTV.text = getString(R.string.error_message, errorMessage)
     }
-
-   /* override fun onDestroy() {
-        super.onDestroy()
-        if (loadListAsyncTask != null && !loadListAsyncTask!!.isCancelled) {
-            loadListAsyncTask!!.cancel(true)
-        }
-    }*/
-
-    /*internal class LoadListAsyncTask(activity: EntryActivity) :
-        AsyncTask<Void?, Void?, Pair<String?, ArrayList<StickerPack>?>>() {
-        private val contextWeakReference: WeakReference<EntryActivity>
-
-        init {
-            contextWeakReference = WeakReference(activity)
-        }
-
-        protected override fun doInBackground(vararg voids: Void): Pair<String?, ArrayList<StickerPack>?> {
-            val stickerPackList: ArrayList<StickerPack>
-            return try {
-                val context: Context? = contextWeakReference.get()
-                if (context != null) {
-                    stickerPackList = fetchStickerPacks(context)
-                    if (stickerPackList.size == 0) {
-                        return Pair("could not find any packs", null)
-                    }
-                    for (stickerPack in stickerPackList) {
-                        verifyStickerPackValidity(context, stickerPack)
-                    }
-                    Pair(null, stickerPackList)
-                } else {
-                    Pair("could not fetch sticker packs", null)
-                }
-            } catch (e: Exception) {
-                Log.e("EntryActivity", "error fetching sticker packs", e)
-                Pair(e.message, null)
-            }
-        }
-
-        override fun onPostExecute(stringListPair: Pair<String?, ArrayList<StickerPack>?>) {
-            val entryActivity = contextWeakReference.get()
-            if (entryActivity != null) {
-                if (stringListPair.first != null) {
-                    entryActivity.showErrorMessage(stringListPair.first)
-                } else {
-                    entryActivity.showStickerPack(stringListPair.second)
-                }
-            }
-        }
-    }*/
 }

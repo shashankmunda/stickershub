@@ -5,7 +5,7 @@
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree.
  */
-package com.shashankmunda.samplestickerapp
+package com.shashankmunda.stickershub.stickerpackinfo
 
 import android.content.Intent
 import android.graphics.Rect
@@ -20,12 +20,19 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.appcompat.content.res.AppCompatResources
+import com.shashankmunda.stickershub.BaseActivity
+import com.shashankmunda.stickershub.R
+import com.shashankmunda.stickershub.databinding.ActivityStickerPackInfoBinding
+import com.shashankmunda.stickershub.stickerpackdetails.ui.StickerPackDetailsActivity
 import java.io.FileNotFoundException
 
 class StickerPackInfoActivity : BaseActivity() {
+
+    private lateinit var binding: ActivityStickerPackInfoBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sticker_pack_info)
+        binding = ActivityStickerPackInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val trayIconUriString =
             intent.getStringExtra(StickerPackDetailsActivity.EXTRA_STICKER_PACK_TRAY_ICON)
         val website = intent.getStringExtra(StickerPackDetailsActivity.EXTRA_STICKER_PACK_WEBSITE)
@@ -34,23 +41,21 @@ class StickerPackInfoActivity : BaseActivity() {
             intent.getStringExtra(StickerPackDetailsActivity.EXTRA_STICKER_PACK_PRIVACY_POLICY)
         val licenseAgreement =
             intent.getStringExtra(StickerPackDetailsActivity.EXTRA_STICKER_PACK_LICENSE_AGREEMENT)
-        val trayIcon = findViewById<TextView>(R.id.tray_icon)
         try {
             val inputStream = contentResolver.openInputStream(Uri.parse(trayIconUriString))
             val trayDrawable = BitmapDrawable(resources, inputStream)
             val emailDrawable = getDrawableForAllAPIs(R.drawable.sticker_3rdparty_email)
             trayDrawable.bounds =
                 Rect(0, 0, emailDrawable!!.intrinsicWidth, emailDrawable.intrinsicHeight)
-            trayIcon.setCompoundDrawablesRelative(trayDrawable, null, null, null)
+            binding.trayIcon.setCompoundDrawablesRelative(trayDrawable, null, null, null)
         } catch (e: FileNotFoundException) {
             Log.e(TAG, "could not find the uri for the tray image:$trayIconUriString")
         }
         setupTextView(website, R.id.view_webpage)
-        val sendEmail = findViewById<TextView>(R.id.send_email)
         if (TextUtils.isEmpty(email)) {
-            sendEmail.visibility = View.GONE
+            binding.sendEmail.visibility = View.GONE
         } else {
-            sendEmail.setOnClickListener { v: View? -> launchEmailClient(email) }
+            binding.sendEmail.setOnClickListener { v: View? -> launchEmailClient(email) }
         }
         setupTextView(privacyPolicy, R.id.privacy_policy)
         setupTextView(licenseAgreement, R.id.license_agreement)
